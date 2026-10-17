@@ -1578,7 +1578,7 @@ main { padding: 0 0 50px; }
       <p class="qstep-q">우리 교회에 방문/등록하신 분들은 예배 후 &lsquo;목양실&rsquo;에서 뵙겠습니다.</p>
       <p class="qstep-q">셀모임 적극참여: 소그룹이 살아야 교회가 섭니다(교재활용).</p>
       <p class="qstep-q">토요전도: 한 영혼을 위한 걸음이 큰 역사를 만듭니다.</p>
-      <p class="qstep-q">정기당회: 다음주 주일 모든 순서 후에 목양실에서 모입니다.</p>
+      <p class="qstep-q">정기당회: 이번주 주일 모든 순서 후에 목양실에서 모입니다.</p>
 
       <p class="qstep-sub" style="margin:24px 0 6px; font-weight:700">월별 주요행사</p>
       <p class="qstep-q" style="font-size:12px; color:var(--ink-soft); margin-bottom:2px">10/25 새생명축제</p>
@@ -1879,6 +1879,28 @@ function pickRevivalSubtab() {
   var btn = document.querySelector('#revival-fest .subtab-btn[data-subtarget="' + id + '"]');
   if (btn) btn.click();
 })();
+
+// 주소 끝에 #아이디를 붙이면 해당 화면이 바로 열립니다.
+// 예) #archive 지난 주일 말씀듣기 / #devotion 말씀·묵상·기도 / #revival-fest 새생명축제 / #church 교회소식·안내 / #w1018 이번 주 설교
+function openFromHash() {
+  var id = '';
+  try { id = decodeURIComponent((location.hash || '').replace(/^#/, '')); } catch (e) { return; }
+  if (!id) return;
+  var el = document.getElementById(id);
+  if (!el) return;
+  var panel = el.hasAttribute('data-panel') ? el : (el.hasAttribute('data-subpanel') ? el.closest('[data-panel]') : null);
+  if (!panel) return;
+  var own = document.querySelector('.tab-btn[data-target="' + panel.id + '"]');
+  var tabBtn = own || document.querySelector('.tab-btn[data-target="devotion"]');
+  if (tabBtn) tabBtn.click();
+  if (!own) switchToWeek(panel.id);
+  if (el !== panel) {
+    var sub = panel.querySelector('.subtab-btn[data-subtarget="' + id + '"]');
+    if (sub) sub.click();
+  }
+}
+openFromHash();
+window.addEventListener('hashchange', openFromHash);
 
 var copyLinkBtn = document.getElementById('copyLinkBtn');
 if (copyLinkBtn) {
